@@ -14,7 +14,18 @@ import {
   Check,
   ChevronRight,
   Puzzle,
+  FolderTree,
+  Tag,
+  Wand2,
+  Users,
+  FileCode2,
+  Layers,
+  Gauge,
+  Timer,
+  Target,
+  Lock,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
