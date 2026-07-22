@@ -424,6 +424,23 @@
                 </div>
                 <div class="switch" id="sw-dateFolders"></div>
               </div>
+              <div class="row">
+                <div class="info">
+                  <span class="t">Desktop notifications</span>
+                  <span class="s">Show a small toast every time renma renames a download.</span>
+                </div>
+                <div class="switch" id="sw-notifications"></div>
+              </div>
+              <div class="row">
+                <div class="info">
+                  <span class="t">Sequence counter</span>
+                  <span class="s">Powers the <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--coral)">{counter}</code> token. Reset anytime.</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span id="counterVal" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--body)">0000</span>
+                  <button id="resetCounter" class="del">Reset</button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
