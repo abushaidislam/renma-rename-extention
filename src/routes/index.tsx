@@ -606,23 +606,7 @@ function RulesShowcase() {
                 <span className="ml-3 text-[11px] font-mono text-white/40 tracking-widest uppercase">background.js</span>
               </div>
               <pre className="font-mono text-[13px] leading-relaxed text-white/85 overflow-x-auto">
-{`chrome.downloads.onDeterminingFilename.addListener(
-  (item, suggest) => {
-    const host = new URL(item.finalUrl || item.url).hostname;
-    const ext  = getExtension(item.filename) || "png";
-
-    (async () => {
-      const custom = await getCustomMappings();
-      const prefix = resolvePrefix(host, custom);
-      const name   = `${'`${prefix}_${Date.now()}.${ext}`'}`;
-
-      await pushHistory({ originalName: item.filename, newName: name, domain: host });
-      suggest({ filename: name });
-    })();
-
-    return true; // keep suggest() alive
-  }
-);`}
+{CODE_SNIPPET}
               </pre>
             </div>
           </motion.div>
