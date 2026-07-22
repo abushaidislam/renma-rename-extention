@@ -395,7 +395,7 @@ function BentoFeatures() {
             Small extension.<br /><span className="italic">Enormous</span> quality-of-life.
           </motion.h2>
           <motion.p variants={fadeUp} className="mt-5 text-body-text text-lg">
-            Everything Smart Image Renamer does happens invisibly, at the moment Chrome asks
+            Everything Renma does happens invisibly, at the moment Chrome asks
             <span className="font-mono text-sm bg-surface-card px-1 mx-1 rounded">onDeterminingFilename</span> —
             no clipboard hacks, no post-processing, no manual renaming.
           </motion.p>
