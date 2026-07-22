@@ -997,30 +997,38 @@ function Footer() {
         {/* Giant wordmark — masked, centered, gradient-filled */}
         <div
           aria-hidden
-          className="relative pointer-events-none select-none flex justify-center items-end -mx-6 h-[22vw] min-h-[140px] max-h-[280px] overflow-hidden"
+          className="relative pointer-events-none select-none flex justify-center items-end -mx-6 h-[22vw] min-h-[160px] max-h-[280px] overflow-hidden"
         >
-          {/* soft glow behind */}
-          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[radial-gradient(ellipse_at_center,hsl(var(--coral)/0.18),transparent_70%)]" />
+          {/* soft coral glow behind */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[80%] h-2/3"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, var(--coral) 0%, transparent 70%)",
+              opacity: 0.22,
+            }}
+          />
           {/* gradient-filled wordmark using image as CSS mask */}
           <div
-            className="relative w-[92%] h-full -mb-[3vw]"
+            className="relative mx-auto w-full max-w-[1100px] h-full -mb-[2vw]"
             style={{
               WebkitMaskImage: `url(${renmaWordmark})`,
               maskImage: `url(${renmaWordmark})`,
               WebkitMaskRepeat: "no-repeat",
               maskRepeat: "no-repeat",
-              WebkitMaskPosition: "center bottom",
-              maskPosition: "center bottom",
+              WebkitMaskPosition: "center center",
+              maskPosition: "center center",
               WebkitMaskSize: "contain",
               maskSize: "contain",
               background:
-                "linear-gradient(135deg, hsl(var(--coral)) 0%, hsl(var(--coral)/0.85) 35%, hsl(var(--ink)/0.9) 100%)",
-              opacity: 0.22,
+                "linear-gradient(135deg, var(--coral) 0%, var(--coral) 40%, var(--ink) 100%)",
+              opacity: 0.55,
             }}
           />
           {/* fade to canvas at bottom */}
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-canvas" />
         </div>
+
 
         {/* Meta row */}
         <div className="relative flex flex-col md:flex-row justify-between items-center py-6 border-t border-ink/10 gap-4">
