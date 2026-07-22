@@ -44,15 +44,39 @@ export const Route = createFileRoute("/")({
 
 /* ---------------- Animations ---------------- */
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
-};
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
+} as const;
 
 const stagger = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-};
+} as const;
+
+const CODE_SNIPPET = `chrome.downloads.onDeterminingFilename.addListener(
+  (item, suggest) => {
+    const host = new URL(item.finalUrl || item.url).hostname;
+    const ext  = getExtension(item.filename) || "png";
+
+    (async () => {
+      const custom = await getCustomMappings();
+      const prefix = resolvePrefix(host, custom);
+      const name   = \`\${prefix}_\${Date.now()}.\${ext}\`;
+
+      await pushHistory({
+        originalName: item.filename,
+        newName: name,
+        domain: host,
+      });
+      suggest({ filename: name });
+    })();
+
+    return true; // keep suggest() alive
+  }
+);`;
 
 /* ---------------- Sections ---------------- */
 
