@@ -99,12 +99,15 @@ function Landing() {
       <Hero />
       <LogoStrip />
       <BentoFeatures />
+      <Benchmark />
       <HowItWorks />
       <RulesShowcase />
+      <Roadmap />
       <FAQ />
       <CTA />
       <Footer />
     </div>
+
   );
 }
 
