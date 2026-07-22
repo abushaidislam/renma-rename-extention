@@ -137,10 +137,15 @@
         word-break: break-all; margin-top: 3px; line-height: 1.4;
       }
       .old::before { content: "was "; color: var(--muted-soft); }
-      .meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+      .meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
       .domain-pill {
         font-size: 10.5px; font-weight: 500; color: var(--coral);
         background: color-mix(in oklab, var(--coral) 10%, transparent);
+        padding: 2px 7px; border-radius: 999px;
+      }
+      .dup-pill {
+        font-size: 10.5px; font-weight: 500; color: #8a5a1a;
+        background: color-mix(in oklab, #d4a24a 22%, transparent);
         padding: 2px 7px; border-radius: 999px;
       }
       .time { font-size: 10.5px; color: var(--muted-soft); }
