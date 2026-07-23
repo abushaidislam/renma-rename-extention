@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import renmaLogo from "@/assets/renma-logo.png";
 import renmaWordmark from "@/assets/renma-wordmark.png";
+import GuideSection from "@/components/GuideSection";
+
 
 
 
@@ -106,8 +108,10 @@ function Landing() {
       <Benchmark />
       <HowItWorks />
       <RulesShowcase />
+      <GuideSection />
       <Roadmap />
       <FAQ />
+
       <CTA />
       <Footer />
     </div>
