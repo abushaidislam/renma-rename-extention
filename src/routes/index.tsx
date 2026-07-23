@@ -106,8 +106,10 @@ function Landing() {
       <Benchmark />
       <HowItWorks />
       <RulesShowcase />
+      <GuideSection />
       <Roadmap />
       <FAQ />
+
       <CTA />
       <Footer />
     </div>
