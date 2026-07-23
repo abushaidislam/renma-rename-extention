@@ -8,6 +8,8 @@ import {
   BarChart3,
   Settings2,
   ArrowRight,
+  Lightbulb,
+  Keyboard,
 } from "lucide-react";
 import sketchOpen from "@/assets/guide/sketch-01-open.jpg";
 import sketchBehavior from "@/assets/guide/sketch-02-behavior.jpg";
@@ -36,58 +38,25 @@ function Star({ className = "" }: { className?: string }) {
   );
 }
 
-/* ───────────────────── Sketch frame ───────────────────── */
+/* ───────────────────── Sketch frame (hero) ───────────────────── */
 
-function SketchFrame({
-  src,
-  alt,
-  legend,
-}: {
-  src: string;
-  alt: string;
-  legend: { title: string; body: string }[];
-}) {
+function SketchFrame({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative">
-      {/* paper frame w/ tape */}
       <div className="relative rounded-[22px] border border-[color:var(--hairline)] bg-[color:var(--canvas)] p-2.5 sm:p-3 shadow-[0_30px_80px_-40px_rgba(20,20,19,0.35)]">
         <span className="absolute -top-3 left-10 h-6 w-20 rotate-[-4deg] rounded-[2px] bg-[color:var(--coral)]/25 border border-[color:var(--coral)]/40" />
         <span className="absolute -top-3 right-14 h-6 w-16 rotate-[3deg] rounded-[2px] bg-[color:var(--accent-amber,#e8a55a)]/25 border border-[color:var(--accent-amber,#e8a55a)]/40" />
-
         <div className="overflow-hidden rounded-[14px] border border-[color:var(--hairline)] bg-[#f5efe1]">
           <img src={src} alt={alt} loading="lazy" className="block w-full h-auto" />
         </div>
       </div>
-
-      {/* legend */}
-      <ol className="mt-5 grid gap-2 sm:grid-cols-2">
-        {legend.map((c, i) => (
-          <li key={i} className="flex gap-2.5 rounded-lg border border-[color:var(--hairline)] bg-[color:var(--surface-soft)] p-3">
-            <span className="mt-[2px] inline-grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[color:var(--coral)] text-[11px] font-bold text-white">
-              {i + 1}
-            </span>
-            <div className="min-w-0">
-              <p className="font-[Fraunces] italic text-[15px] leading-tight text-[color:var(--ink)]">{c.title}</p>
-              <p className="mt-1 text-[13px] leading-snug text-[color:var(--body)]">{c.body}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
     </div>
   );
 }
 
-/* ───────────────────── Real-usage demo strip ───────────────────── */
+/* ───────────────────── Before/after strip ───────────────────── */
 
-function BeforeAfter({
-  before,
-  after,
-  note,
-}: {
-  before: string;
-  after: string;
-  note?: string;
-}) {
+function BeforeAfter({ before, after, note }: { before: string; after: string; note?: string }) {
   return (
     <div className="relative rounded-2xl border border-dashed border-[color:var(--ink)]/20 bg-[color:var(--canvas)] p-4 sm:p-5">
       <span className="absolute -top-3 left-4 rounded-full bg-[color:var(--surface-soft)] px-2 font-mono text-[10px] uppercase tracking-widest text-[color:var(--muted)]">
@@ -108,9 +77,38 @@ function BeforeAfter({
           <p className="mt-1 truncate font-mono text-[13px] font-medium text-[color:var(--ink)]">{after}</p>
         </div>
       </div>
-      {note && (
-        <p className="mt-3 font-[Fraunces] italic text-[14px] text-[color:var(--body)]">— {note}</p>
-      )}
+      {note && <p className="mt-3 font-[Fraunces] italic text-[14px] text-[color:var(--body)]">— {note}</p>}
+    </div>
+  );
+}
+
+/* ───────────────────── How-to steps + Tip ───────────────────── */
+
+type HowStep = { action: string; detail?: string };
+
+function HowToList({ steps }: { steps: HowStep[] }) {
+  return (
+    <ol className="relative space-y-3">
+      {steps.map((s, i) => (
+        <li key={i} className="flex gap-3">
+          <span className="mt-[2px] inline-grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 border-[color:var(--ink)] bg-[color:var(--canvas)] font-mono text-[11px] font-bold text-[color:var(--ink)]">
+            {i + 1}
+          </span>
+          <p className="text-[14.5px] leading-[1.55] text-[color:var(--ink)]">
+            <span className="font-medium">{s.action}</span>
+            {s.detail && <span className="text-[color:var(--body)]"> — {s.detail}</span>}
+          </p>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function Tip({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-5 flex gap-3 rounded-xl border border-[color:var(--coral)]/30 bg-[color:var(--coral)]/8 p-3.5">
+      <Lightbulb className="mt-[2px] h-4 w-4 shrink-0 text-[color:var(--coral)]" />
+      <p className="font-[Fraunces] italic text-[14px] leading-snug text-[color:var(--ink)]">{children}</p>
     </div>
   );
 }
@@ -122,7 +120,9 @@ function Step({
   icon: Icon,
   title,
   kicker,
-  children,
+  intro,
+  how,
+  tip,
   shot,
   demo,
 }: {
@@ -130,7 +130,9 @@ function Step({
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   kicker: string;
-  children: React.ReactNode;
+  intro: React.ReactNode;
+  how: HowStep[];
+  tip?: React.ReactNode;
   shot: React.ReactNode;
   demo?: React.ReactNode;
 }) {
@@ -140,29 +142,42 @@ function Step({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6 }}
-      className="relative grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.3fr)] lg:gap-14 items-start"
+      className="relative grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-14 items-start"
     >
-      <div className="lg:sticky lg:top-28">
-        <div className="flex items-center gap-3 text-[color:var(--muted)]">
+      {/* Big sketch on the left */}
+      <div className="relative">
+        <div className="flex items-center gap-3 text-[color:var(--muted)] mb-4">
           <span className="font-mono text-[12px] tracking-widest uppercase">Step {num}</span>
           <span className="h-px flex-1 bg-[color:var(--hairline)]" />
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[color:var(--coral)]">{kicker}</span>
         </div>
-        <div className="mt-4 flex items-start gap-4">
+        {shot}
+      </div>
+
+      {/* How-to + demo on the right */}
+      <div className="lg:pt-2">
+        <div className="flex items-start gap-4">
           <div className="relative grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[color:var(--coral)] text-white shadow-[0_10px_30px_-10px_rgba(204,120,92,0.6)]">
             <Icon className="h-5 w-5" />
             <Star className="absolute -right-3 -top-3 h-4 w-4 text-[color:var(--ink)]" />
           </div>
-          <div className="min-w-0">
-            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[color:var(--coral)]">{kicker}</p>
-            <h3 className="mt-1 font-[Fraunces] italic text-[30px] sm:text-[38px] leading-[1.05] text-[color:var(--ink)]">
-              {title}
-            </h3>
-          </div>
+          <h3 className="font-[Fraunces] italic text-[28px] sm:text-[34px] leading-[1.05] text-[color:var(--ink)]">
+            {title}
+          </h3>
         </div>
-        <div className="mt-5 text-[15.5px] leading-[1.7] text-[color:var(--body)] space-y-3">{children}</div>
-        {demo && <div className="mt-6">{demo}</div>}
+
+        <div className="mt-4 text-[15px] leading-[1.65] text-[color:var(--body)]">{intro}</div>
+
+        <div className="mt-6 rounded-2xl border border-[color:var(--hairline)] bg-[color:var(--surface-soft)] p-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--muted)] mb-3">
+            How to do it
+          </p>
+          <HowToList steps={how} />
+          {tip && <Tip>{tip}</Tip>}
+        </div>
+
+        {demo && <div className="mt-5">{demo}</div>}
       </div>
-      <div className="relative">{shot}</div>
     </motion.div>
   );
 }
@@ -181,36 +196,51 @@ export default function GuideSection() {
         backgroundColor: "var(--canvas)",
       }}
     >
-      {/* corner doodles */}
       <Star className="absolute left-6 top-10 h-5 w-5 text-[color:var(--ink)]/30" />
       <Star className="absolute right-8 top-24 h-4 w-4 text-[color:var(--coral)]/50" />
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        {/* Section header */}
+        {/* Header */}
         <div className="max-w-3xl">
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[color:var(--coral)]">
             The field notebook
           </p>
           <h2 className="mt-3 font-[Fraunces] italic text-[44px] sm:text-[64px] leading-[0.98] tracking-[-0.02em]">
-            A hand-drawn tour of{" "}
+            Learn Renma in{" "}
             <span className="relative inline-block">
-              <span className="relative z-10">every setting</span>
-              <span
-                aria-hidden
-                className="absolute inset-x-0 bottom-1 h-3 -z-0 bg-[color:var(--coral)]/30 rotate-[-1deg]"
-              />
+              <span className="relative z-10">seven sketches</span>
+              <span aria-hidden className="absolute inset-x-0 bottom-1 h-3 -z-0 bg-[color:var(--coral)]/30 rotate-[-1deg]" />
               <Squiggle className="absolute left-0 right-0 -bottom-2 w-full text-[color:var(--coral)]" />
             </span>
             .
           </h2>
           <p className="mt-5 text-[16.5px] leading-[1.65] text-[color:var(--body)] max-w-xl">
-            Ink-and-paper sketches for every control — plus a before/after with a
-            real filename, so you know exactly what changes.
+            Hand-drawn sketches of every screen, click-by-click instructions, and a
+            real before/after filename so you know exactly what happens.
           </p>
         </div>
 
+        {/* Quick start strip */}
+        <div className="mt-10 grid gap-3 sm:grid-cols-3 rounded-2xl border border-[color:var(--hairline)] bg-[color:var(--surface-soft)] p-4">
+          {[
+            { k: "1", t: "Install", d: "Load unpacked at chrome://extensions." },
+            { k: "2", t: "Open options", d: "Right-click the icon → Options." },
+            { k: "3", t: "Save an image", d: "Renma renames it instantly." },
+          ].map((s) => (
+            <div key={s.k} className="flex gap-3 p-2">
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[color:var(--coral)] text-white font-mono text-[12px] font-bold">
+                {s.k}
+              </span>
+              <div>
+                <p className="font-[Fraunces] italic text-[16px] text-[color:var(--ink)]">{s.t}</p>
+                <p className="text-[13px] text-[color:var(--body)]">{s.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* TOC */}
-        <ol className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["Open settings", "guide-1"],
             ["Behavior", "guide-2"],
@@ -243,28 +273,15 @@ export default function GuideSection() {
             kicker="Open"
             icon={Settings2}
             title="Find the settings page"
-            shot={
-              <SketchFrame
-                src={sketchOpen}
-                alt="chrome://extensions with Renma highlighted"
-                legend={[
-                  { title: "Extension card", body: "Renma sits on your chrome://extensions page like any other extension." },
-                  { title: "Extension options", body: "Click the dashed row to open the full settings surface." },
-                ]}
-              />
-            }
-          >
-            <p>
-              Go to{" "}
-              <code className="rounded bg-[color:var(--surface-card)] px-1.5 py-0.5 font-mono text-[13px]">
-                chrome://extensions
-              </code>
-              , click <b>Details</b> on Renma, then <b>Extension options</b>.
-            </p>
-            <p className="text-[color:var(--muted)]">
-              Shortcut: right-click the toolbar icon and pick <i>Options</i>.
-            </p>
-          </Step>
+            intro={<p>Every control lives on a single options page. You only need to open it once.</p>}
+            how={[
+              { action: "Open chrome://extensions", detail: "paste it into the address bar and hit enter." },
+              { action: "Find the Renma card", detail: "it looks like any other extension in the list." },
+              { action: "Click Details, then Extension options", detail: "the dashed row on the sketch." },
+            ]}
+            tip={<>Shortcut — right-click the toolbar icon and pick <b>Options</b>. Same page, one click.</>}
+            shot={<SketchFrame src={sketchOpen} alt="chrome://extensions with Renma highlighted" />}
+          />
 
           <div id="guide-2" />
           <Step
@@ -272,31 +289,22 @@ export default function GuideSection() {
             kicker="Behavior"
             icon={MousePointer2}
             title="Flip the master switches"
-            shot={
-              <SketchFrame
-                src={sketchBehavior}
-                alt="Behavior toggles sketch"
-                legend={[
-                  { title: "Enable renma", body: "Global kill switch — pause everywhere without uninstalling." },
-                  { title: "Images only", body: "Skip PDFs, ZIPs, and other MIME types." },
-                  { title: "Notify me", body: "Small desktop toast fires on every rename." },
-                ]}
-              />
-            }
+            intro={<p>Three toggles decide when Renma is active and how loud it is about it.</p>}
+            how={[
+              { action: "Enable renma", detail: "the global on/off. Off = every download saves untouched." },
+              { action: "Only images", detail: "restrict Renma to real image MIME types. PDFs, ZIPs pass through." },
+              { action: "Notify me", detail: "a small desktop toast fires on every rename." },
+            ]}
+            tip={<>Turn <b>Notify me</b> on for the first day so you can see what Renma is doing, then switch it off.</>}
+            shot={<SketchFrame src={sketchBehavior} alt="Behavior toggles sketch" />}
             demo={
               <BeforeAfter
                 before="unsplash-photo-2394.pdf"
                 after="unsplash-photo-2394.pdf"
-                note="With ‘Only images’ ON, non-images pass through untouched."
+                note="With 'Only images' ON, non-images pass through untouched."
               />
             }
-          >
-            <p>
-              The <b>master toggle</b> pauses renaming globally. <b>Only images</b> restricts
-              Renma to actual image MIME types. <b>Notifications</b> shows a small desktop
-              toast for every rename.
-            </p>
-          </Step>
+          />
 
           <div id="guide-3" />
           <Step
@@ -304,16 +312,14 @@ export default function GuideSection() {
             kicker="Template"
             icon={FileType2}
             title="Design the filename"
-            shot={
-              <SketchFrame
-                src={sketchTemplate}
-                alt="Filename template editor sketch"
-                legend={[
-                  { title: "The recipe", body: "Mix tokens with _  -  . to taste. Tap a chip to insert." },
-                  { title: "Live preview", body: "Renders using a real Unsplash download." },
-                ]}
-              />
-            }
+            intro={<p>Templates are recipes. Mix tokens and separators — Renma fills in the values at download time.</p>}
+            how={[
+              { action: "Tap a token chip", detail: "it inserts into the editor at the cursor." },
+              { action: "Add separators", detail: "underscore, dash, or dot between tokens for readability." },
+              { action: "Check the live preview", detail: "it uses a real Unsplash download so you know what you get." },
+            ]}
+            tip={<>Available tokens: <code>{"{prefix} {date} {time} {timestamp} {counter} {width} {height} {dimensions} {ext}"}</code>.</>}
+            shot={<SketchFrame src={sketchTemplate} alt="Filename template editor sketch" />}
             demo={
               <BeforeAfter
                 before="photo-1503023345310-bd7c1de61c7d.jpg"
@@ -321,14 +327,7 @@ export default function GuideSection() {
                 note="Template: {prefix}_{date}-{time}_{dimensions}.{ext}"
               />
             }
-          >
-            <p>Common recipes:</p>
-            <ul className="space-y-1.5 font-mono text-[13px] text-[color:var(--ink)]">
-              <li>· {"{prefix}_{timestamp}.{ext}"}</li>
-              <li>· {"{prefix}-{date}-{counter}.{ext}"}</li>
-              <li>· {"{prefix}_{dimensions}.{ext}"}</li>
-            </ul>
-          </Step>
+          />
 
           <div id="guide-4" />
           <Step
@@ -336,30 +335,23 @@ export default function GuideSection() {
             kicker="Rules"
             icon={Globe2}
             title="Teach it your domains"
-            shot={
-              <SketchFrame
-                src={sketchRules}
-                alt="Domain rules table sketch"
-                legend={[
-                  { title: "Domain", body: "Any substring of the URL host. dribbble also matches cdn.dribbble.com." },
-                  { title: "Prefix", body: "Becomes {prefix} in your template." },
-                  { title: "Folder", body: "Optional subfolder inside your Downloads/ root." },
-                ]}
-              />
-            }
+            intro={<p>Rules map a hostname to a prefix and, optionally, a subfolder inside Downloads/.</p>}
+            how={[
+              { action: "Click Add rule" },
+              { action: "Type a domain fragment", detail: "'dribbble' matches dribbble.com AND cdn.dribbble.com." },
+              { action: "Set a prefix", detail: "this replaces {prefix} in your template." },
+              { action: "Optional: set a folder", detail: "e.g. refs/ui — Renma creates it inside Downloads/." },
+            ]}
+            tip={<>Renma ships with sensible defaults — OpenAI → <code>AI_Generated</code>. Delete or edit anything.</>}
+            shot={<SketchFrame src={sketchRules} alt="Domain rules table sketch" />}
             demo={
               <BeforeAfter
                 before="ss_1_4x-1720012.jpg"
                 after="refs/ui/Dribbble_20260723-142255.jpg"
-                note="Rule: dribbble.com → prefix ‘Dribbble’, folder ‘refs/ui’"
+                note="Rule: dribbble.com → prefix 'Dribbble', folder 'refs/ui'"
               />
             }
-          >
-            <p>
-              Ships with defaults (OpenAI → <code>AI_Generated</code>). Add your own to route
-              specific sites into named prefixes and folders.
-            </p>
-          </Step>
+          />
 
           <div id="guide-5" />
           <Step
@@ -367,30 +359,22 @@ export default function GuideSection() {
             kicker="Scope"
             icon={Sparkles}
             title="Pick where Renma runs"
-            shot={
-              <SketchFrame
-                src={sketchScope}
-                alt="Site scope sketch"
-                legend={[
-                  { title: "Mode", body: "All sites · whitelist · blacklist. Only one is active." },
-                  { title: "Site list", body: "One domain per chip. Enter to add, × to remove." },
-                ]}
-              />
-            }
+            intro={<p>Site scope is a big kill-switch by domain. Only one mode is active at a time.</p>}
+            how={[
+              { action: "Pick a mode", detail: "All sites · Whitelist only · Blacklist." },
+              { action: "Type a domain, press Enter", detail: "a chip appears in the list." },
+              { action: "Click × to remove", detail: "empty list + Whitelist mode = Renma runs nowhere." },
+            ]}
+            tip={<>Put your bank and email provider on the <b>Blacklist</b>. Renma won't touch anything you download there.</>}
+            shot={<SketchFrame src={sketchScope} alt="Site scope sketch" />}
             demo={
               <BeforeAfter
-                before="IMG_9821.jpeg"
-                after="IMG_9821.jpeg"
+                before="statement_IMG_9821.jpeg"
+                after="statement_IMG_9821.jpeg"
                 note="Blacklist contains your bank — Renma stays out of the way."
               />
             }
-          >
-            <p>
-              <b>Whitelist</b> when you only want Renma on a handful of sources.{" "}
-              <b>Blacklist</b> to keep sensitive downloads untouched.{" "}
-              <b>All sites</b> is the default.
-            </p>
-          </Step>
+          />
 
           <div id="guide-6" />
           <Step
@@ -398,31 +382,22 @@ export default function GuideSection() {
             kicker="Insights"
             icon={BarChart3}
             title="Duplicates & stats"
-            shot={
-              <SketchFrame
-                src={sketchStats}
-                alt="Duplicate handling and stats sketch"
-                legend={[
-                  { title: "Off · Tag · Skip", body: "How to treat the same URL downloaded twice." },
-                  { title: "Totals", body: "Lifetime, today, and unique sources at a glance." },
-                  { title: "Top domains", body: "Bar chart of where your images actually come from." },
-                ]}
-              />
-            }
+            intro={<p>Choose how the same URL twice should behave, and watch your download habits fill in below.</p>}
+            how={[
+              { action: "Pick a duplicate mode", detail: "Off = ignore · Tag = mark it · Skip = refuse the re-download." },
+              { action: "Scroll to Stats", detail: "totals, today, and unique sources — 100% local." },
+              { action: "Read the top-domains chart", detail: "the bars show where your images actually come from." },
+            ]}
+            tip={<>Nothing in Stats leaves your machine — no telemetry, no accounts, no network calls.</>}
+            shot={<SketchFrame src={sketchStats} alt="Duplicate handling and stats sketch" />}
             demo={
               <BeforeAfter
                 before="hero-banner.png  (already saved)"
                 after="⏭  skipped — duplicate URL"
-                note="Duplicate mode = ‘Skip’ — no clutter, no ‘(1)’ copies."
+                note="Duplicate mode = 'Skip' — no clutter, no '(1)' copies."
               />
             }
-          >
-            <p>
-              <b>Tag</b> keeps duplicate downloads but marks them in the popup. <b>Skip</b>{" "}
-              refuses to re-download the same URL entirely.
-            </p>
-            <p>The stats panel is fully local — nothing leaves your machine.</p>
-          </Step>
+          />
 
           <div id="guide-7" />
           <Step
@@ -430,16 +405,14 @@ export default function GuideSection() {
             kicker="Portable"
             icon={Copy}
             title="Backup & restore"
-            shot={
-              <SketchFrame
-                src={sketchBackup}
-                alt="Backup and restore sketch"
-                legend={[
-                  { title: "Export", body: "Downloads your full config as renma-backup.json." },
-                  { title: "Import", body: "Drop the same JSON on any other machine." },
-                ]}
-              />
-            }
+            intro={<p>Your config is a single JSON file. Move machines without redoing anything.</p>}
+            how={[
+              { action: "Click Export", detail: "downloads renma-backup.json." },
+              { action: "On the new machine, install Renma", detail: "open options." },
+              { action: "Click Import and pick the JSON", detail: "templates, rules, scope, toggles — all restored." },
+            ]}
+            tip={<>Keep a fresh export in your dotfiles. Renma is trivially reproducible on any new laptop.</>}
+            shot={<SketchFrame src={sketchBackup} alt="Backup and restore sketch" />}
             demo={
               <BeforeAfter
                 before="fresh install, no rules"
@@ -447,46 +420,44 @@ export default function GuideSection() {
                 note="Everything travels: templates, rules, scope, duplicate mode, toggles."
               />
             }
-          >
-            <p>
-              Moving laptops? Export once, import on the other side. Templates, rules, scope,
-              duplicate mode and toggles all travel together.
-            </p>
-          </Step>
+          />
 
           {/* Popup bonus */}
           <div id="guide-popup" />
           <section className="relative rounded-[28px] border border-[color:var(--hairline)] bg-[color:var(--surface-soft)] p-6 sm:p-10">
             <span className="absolute -top-3 left-10 h-6 w-24 rotate-[-4deg] rounded-[2px] bg-[color:var(--coral)]/25 border border-[color:var(--coral)]/40" />
             <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] items-center">
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[color:var(--coral)]">
-                  Bonus
-                </p>
-                <h3 className="mt-2 font-[Fraunces] italic text-[34px] leading-[1.05]">
-                  The toolbar popup
-                </h3>
-                <p className="mt-4 text-[15.5px] leading-[1.7] text-[color:var(--body)]">
-                  Click the Renma icon to see the last 50 renames, search them, export as JSON,
-                  or hit <b>Undo</b> to revert the most recent one.
-                </p>
-                <div className="mt-5 grid gap-2 text-[13.5px] text-[color:var(--body)]">
-                  {[
-                    ["Alt+Shift+P", "open popup"],
-                    ["Alt+Shift+R", "toggle renaming on/off"],
-                    ["Alt+Shift+Z", "undo last rename"],
-                  ].map(([k, v]) => (
-                    <div key={k} className="flex items-center gap-3">
-                      <kbd className="rounded-md border border-[color:var(--hairline)] bg-[color:var(--canvas)] px-2 py-1 font-mono text-[12px] text-[color:var(--ink)]">
-                        {k}
-                      </kbd>
-                      <span className="text-[color:var(--muted)]">{v}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="relative mx-auto max-w-sm rounded-[20px] border border-[color:var(--hairline)] bg-[color:var(--canvas)] p-3 shadow-[0_20px_60px_-30px_rgba(20,20,19,0.3)]">
+              <div className="relative mx-auto max-w-md rounded-[20px] border border-[color:var(--hairline)] bg-[color:var(--canvas)] p-3 shadow-[0_20px_60px_-30px_rgba(20,20,19,0.3)]">
                 <img src={sketchPopup} alt="Renma popup sketch" loading="lazy" className="block w-full h-auto rounded-[12px]" />
+              </div>
+              <div>
+                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[color:var(--coral)]">Bonus</p>
+                <h3 className="mt-2 font-[Fraunces] italic text-[34px] leading-[1.05]">The toolbar popup</h3>
+                <p className="mt-4 text-[15.5px] leading-[1.7] text-[color:var(--body)]">
+                  Click the Renma icon for your last 50 renames. Search them, export as JSON, or
+                  hit <b>Undo</b> to revert the most recent one.
+                </p>
+
+                <div className="mt-6 rounded-2xl border border-[color:var(--hairline)] bg-[color:var(--canvas)] p-5">
+                  <div className="flex items-center gap-2 text-[color:var(--muted)] mb-3">
+                    <Keyboard className="h-4 w-4" />
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em]">Keyboard shortcuts</p>
+                  </div>
+                  <div className="grid gap-2 text-[13.5px] text-[color:var(--body)]">
+                    {[
+                      ["Alt+Shift+P", "open popup"],
+                      ["Alt+Shift+R", "toggle renaming on/off"],
+                      ["Alt+Shift+Z", "undo last rename"],
+                    ].map(([k, v]) => (
+                      <div key={k} className="flex items-center gap-3">
+                        <kbd className="rounded-md border border-[color:var(--hairline)] bg-[color:var(--surface-soft)] px-2 py-1 font-mono text-[12px] text-[color:var(--ink)]">
+                          {k}
+                        </kbd>
+                        <span>{v}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </section>
